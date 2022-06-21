@@ -14,14 +14,14 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
 });
 
 // подключаем мидлвары, роуты и всё остальное...
-/*
+
 app.use((req, res, next) => {
   req.user = {
-    _id: '5d8b8592978f8bd833ca8133'  вставьте сюда _id созданного в предыдущем пункте пользователя
+    _id: '62b2034c0fd31ff0f944ead1'  // вставьте сюда _id созданного в предыдущем пункте пользователя
   };
   next();
 });
-*/
+
 app.use('/users', usersRoutes);
 app.use('/cards', cardsRoutes);
 
