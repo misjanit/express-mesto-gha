@@ -1,6 +1,6 @@
 const Card = require('../models/card');
 const VALIDATION_ERROR = 400;
-const CANTFIND_ERROR = 404; // пользователь не найден
+const NOTFOUND_ERROR = 404; // пользователь не найден
 const ERROR = 500; // ошибка по умолчанию
 
 // Получаем объект из всех карточек
@@ -26,7 +26,7 @@ module.exports.createCard = (req, res) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return res.status(VALIDATION_ERROR).send({ message: 'Ошибка авторизации' })
+        return res.status(VALIDATION_ERROR).send({ message: 'Переданы некорректные данные' })
       }
       if (err.name === 'Error') {
         return res.status(ERROR).send({ message: 'Ошибка сервера'})
