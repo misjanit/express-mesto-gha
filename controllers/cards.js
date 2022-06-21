@@ -20,8 +20,10 @@ module.exports.getCards = (req, res) => {
 module.exports.createCard = (req, res) => {
   const { name, link } = req.body;
 
-  Card.create({ name, link })
-    .then((card) => res.satus(200).send({ card }))
+  Card.create({ name, link, owner: req.user._id })
+    .then((card) => {
+      res.satus(200).send({ card })
+    })
     .catch((err) => {
       if (err.name === 'ValidationError') {
         return res.status(VALIDATION_ERROR).send({ message: 'Ошибка авторизации' })
@@ -54,7 +56,7 @@ module.exports.deleteCard = (req, res) => {
 
 module.exports.likeCard = (req, res) => {
   Card.findByIdAndUpdate( req.params.cardId, { $addToSet: { likes: req.user._id } }, { new: true } )
-  .then((card) =>{
+  .then((card) => {
     if (!card) {
       return res.status(NOTFOUND_ERROR).send({ message: 'Карточка не найдена' });
     }
