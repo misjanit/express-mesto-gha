@@ -22,7 +22,7 @@ module.exports.createUser = (req, res) => {
 
   User.create({name, about, avatar})
     .then((user) => {
-      return res.status(200).send({user})
+      return res.status(200).send({ user })
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
@@ -59,11 +59,15 @@ module.exports.findUser = (req, res) => {
 // Обновляем информацию о пользователе (имя или описание)
 module.exports.updateUserInfo = (req, res) => {
   const { name, about } = req.body;
-  const { id } = req.user_id;
+  const id = req.user_id;
 
   User.findByIdAndUpdate(id, { name, about }, {new: true, runValidators: true })
     .then((user) => {
-    return res.status(200).send({user})
+      if (user) {
+        return res.status(200).send({ user })
+      } else {
+        return res.status(NOTFOUND_ERROR).send({ message: 'Пользователь не найден' })
+      }
   })
   .catch((err) => {
     if (err.name === 'ValidationError') {
@@ -78,11 +82,15 @@ module.exports.updateUserInfo = (req, res) => {
 // Обновляем аватар
 module.exports.updateAvatar = (req, res) => {
   const { avatar } = req.body;
-  const { id } = req.user_id;
+  const id = req.user_id;
 
   User.findOneAndUpdate(id, { avatar }, { new: true, runValidators: true, upsert: true })
     .then((user) => {
-    return res.status(200).send({user})
+      if (user) {
+        return res.status(200).send({ user })
+      } else {
+        return res.status(NOTFOUND_ERROR).send({ message: 'Пользователь не найден' })
+      }
   })
     .catch((err) => {
     if (err.name === 'ValidationError') {

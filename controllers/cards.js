@@ -33,10 +33,15 @@ module.exports.createCard = (req, res) => {
 }
 
 module.exports.deleteCard = (req, res) => {
-  const { id } = req.card_id;
+  const id = req.params;
 
   Card.findByIdAndRemove(id)
-    .then((card) => res.status(200).send({ card }))
+    .then((card) => {
+      if (!card) {
+        return res.status(NOTFOUND_ERROR).send({ message: 'Карточка не найдена' });
+      }
+      return res.status(200).send({ card });
+    })
     .catch((err) => {
       if (err.name === 'ValidationError') {
         return res.status(VALIDATION_ERROR).send({ message: 'Ошибка авторизации' })
@@ -49,7 +54,12 @@ module.exports.deleteCard = (req, res) => {
 
 module.exports.likeCard = (req, res) => {
   Card.findByIdAndUpdate( req.params.cardId, { $addToSet: { likes: req.user._id } }, { new: true } )
-  .then((card) => res.status(200).send({ card }))
+  .then((card) =>{
+    if (!card) {
+      return res.status(NOTFOUND_ERROR).send({ message: 'Карточка не найдена' });
+    }
+    return res.status(200).send({ card });
+  })
   .catch((err) => {
     if (err.name === 'ValidationError') {
       return res.status(VALIDATION_ERROR).send({ message: 'Ошибка авторизации' })
@@ -62,7 +72,12 @@ module.exports.likeCard = (req, res) => {
 
 module.exports.dislikeCard = (req, res) => {
   Card.findByIdAndUpdate( req.params.cardId, { $pull: { likes: req.user._id } }, { new: true } )
-  .then((card) => res.status(200).send({ card }))
+  .then((card) => {
+    if (!card) {
+      return res.status(NOTFOUND_ERROR).send({ message: 'Карточка не найдена' });
+    }
+    return res.status(200).send({ card });
+  })
   .catch((err) => {
     if (err.name === 'ValidationError') {
       return res.status(VALIDATION_ERROR).send({ message: 'Ошибка авторизации' })
