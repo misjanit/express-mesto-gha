@@ -7,7 +7,7 @@ const ERROR = 500; // ошибка по умолчанию
 module.exports.getUsers = (req, res) => {
   User.find({})
   .then((users) => {
-    return res.status(200).send({ users })
+    return res.status(OK).send({ users })
   })
   .catch((err) => {
     if (err.name === 'Error') {
@@ -22,7 +22,7 @@ module.exports.createUser = (req, res) => {
 
   User.create({name, about, avatar})
     .then((user) => {
-      return res.status(200).send(user)
+      return res.status(OK).send({user})
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
@@ -41,7 +41,7 @@ module.exports.findUser = (req, res) => {
   User.findById(id)
     .then((user) => {
       if (user) {
-        return res.status(200).send({ data })
+        return res.status(OK).send({ data })
       } else {
         return res.status(NOTFOUND_ERROR).send({ message: 'Пользователь не найден' })
       }
@@ -63,7 +63,7 @@ module.exports.updateUserInfo = (req, res) => {
 
   User.findByIdAndUpdate(id, { name, about }, {new: true, runValidators: true })
     .then((user) => {
-    return res.status(200).send(user)
+    return res.status(OK).send({user})
   })
   .catch((err) => {
     if (err.name === 'ValidationError') {
@@ -82,7 +82,7 @@ module.exports.updateAvatar = (req, res) => {
 
   User.findOneAndUpdate(id, { avatar }, { new: true, runValidators: true, upsert: true })
     .then((user) => {
-    return res.status(200).send(user)
+    return res.status(OK).send({user})
   })
     .catch((err) => {
     if (err.name === 'ValidationError') {
