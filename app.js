@@ -25,6 +25,10 @@ app.use((req, res, next) => {
 app.use('/users', usersRoutes);
 app.use('/cards', cardsRoutes);
 
+app.use((req, res, next) => {
+  res.status(404).send("Страница не найдена");
+})
+
 app.get((req, res, next) => {
   res.status(404).send({ message: 'Страница не найдена'});
 });
