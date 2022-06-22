@@ -16,7 +16,6 @@ module.exports.getCards = (req, res) => {
     })
 }
 
-
 // Создаем карточку
 module.exports.createCard = (req, res) => {
   const { name, link } = req.body;
@@ -76,7 +75,10 @@ module.exports.likeCard = (req, res) => {
 }
 
 module.exports.dislikeCard = (req, res) => {
-  Card.findByIdAndUpdate( req.params.cardId, { $pull: { likes: req.user._id } }, { new: true } )
+  Card.findByIdAndUpdate(
+  req.params.cardId,
+  { $pull: { likes: req.user._id } },
+  { new: true, runValidators: true } )
   .then((card) => {
     if (!card) {
       return res.status(NOTFOUND_ERROR).send({ message: 'Карточка не найдена' });
@@ -84,12 +86,10 @@ module.exports.dislikeCard = (req, res) => {
     return res.status(200).send({ card });
   })
   .catch((err) => {
-    if (err.name === 'ValidationError') {
-      return res.status(VALIDATION_ERROR).send({ message: 'Переданы некорректные данные' })
+    if (err.name === 'ValidationError' || err.name === 'CastError') {
+      return res.status(VALIDATION_ERROR).send({ message: 'Переданы некорректные данные.' });
     }
-    if (err.name === 'Error') {
-      return res.status(ERROR).send({ message: 'Произошла ошибка' })
-    }
-  })
+    return res.status(ERROR).send({ message: 'Произошла ошибка' });
+  });
 }
 
