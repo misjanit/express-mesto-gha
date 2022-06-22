@@ -16,6 +16,7 @@ module.exports.getCards = (req, res) => {
     })
 }
 
+
 // Создаем карточку
 module.exports.createCard = (req, res) => {
   const { name, link } = req.body;
@@ -29,7 +30,7 @@ module.exports.createCard = (req, res) => {
         return res.status(VALIDATION_ERROR).send({ message: 'Переданы некорректные данные' })
       }
       if (err.name === 'Error') {
-        return res.status(ERROR).send({ message: 'Ошибка сервера'})
+        return res.status(ERROR).send({ message: 'Произошла ошибка' })
       }
     })
 }
@@ -46,10 +47,10 @@ module.exports.deleteCard = (req, res) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return res.status(VALIDATION_ERROR).send({ message: 'Ошибка авторизации' })
+        return res.status(VALIDATION_ERROR).send({ message: 'Переданы некорректные данные' })
       }
       if (err.name === 'Error') {
-        return res.status(ERROR).send({ message: 'Ошибка сервера'})
+        return res.status(ERROR).send({ message: 'Произошла ошибка' })
       }
     })
 }
@@ -64,10 +65,10 @@ module.exports.likeCard = (req, res) => {
   })
   .catch((err) => {
     if (err.name === 'ValidationError') {
-      return res.status(VALIDATION_ERROR).send({ message: 'Ошибка авторизации' })
+      return res.status(VALIDATION_ERROR).send({ message: 'Переданы некорректные данные' })
     }
     if (err.name === 'Error') {
-      return res.status(ERROR).send({ message: 'Ошибка сервера'})
+      return res.status(ERROR).send({ message: 'Произошла ошибка' })
     }
   })
 }
@@ -82,10 +83,10 @@ module.exports.dislikeCard = (req, res) => {
   })
   .catch((err) => {
     if (err.name === 'ValidationError') {
-      return res.status(VALIDATION_ERROR).send({ message: 'Ошибка авторизации' })
+      return res.status(VALIDATION_ERROR).send({ message: 'Переданы некорректные данные' })
     }
     if (err.name === 'Error') {
-      return res.status(ERROR).send({ message: 'Ошибка сервера'})
+      return res.status(ERROR).send({ message: 'Произошла ошибка' })
     }
   })
 }
