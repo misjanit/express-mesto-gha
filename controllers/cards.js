@@ -55,22 +55,25 @@ module.exports.deleteCard = (req, res) => {
     })
 }
 
+
 module.exports.likeCard = (req, res) => {
-  Card.findByIdAndUpdate( req.params.cardId, { $addToSet: { likes: req.user._id } }, { new: true } )
+  Card.findByIdAndUpdate(
+    req.params.cardId,
+    { $addToSet: { likes: req.user._id } },
+    { new: true, runValidators: true },
+  )
   .then((card) => {
     if (!card) {
       return res.status(NOTFOUND_ERROR).send({ message: 'Карточка не найдена' });
     }
-    return res.status(200).send({ card });
+    return res.send({ card });
   })
   .catch((err) => {
-    if (err.name === 'ValidationError') {
-      return res.status(VALIDATION_ERROR).send({ message: 'Переданы некорректные данные' })
+    if (err.name === 'ValidationError' || err.name === 'CastError') {
+      return res.status(VALIDATION_ERROR).send({ message: 'Переданы некорректные данные.' });
     }
-    if (err.name === 'Error') {
-      return res.status(ERROR).send({ message: 'Произошла ошибка' })
-    }
-  })
+    return res.status(ERROR).send({ message: 'Произошла ошибка' });
+  });
 }
 
 module.exports.dislikeCard = (req, res) => {
