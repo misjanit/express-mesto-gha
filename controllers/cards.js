@@ -36,7 +36,7 @@ module.exports.createCard = (req, res) => {
 }
 
 module.exports.deleteCard = (req, res) => {
-  const id = req.params;
+  const { id } = req.params;
 
   Card.findByIdAndRemove(id)
     .then((card) => {
@@ -54,7 +54,6 @@ module.exports.deleteCard = (req, res) => {
       }
     })
 }
-
 
 module.exports.likeCard = (req, res) => {
   Card.findByIdAndUpdate(
