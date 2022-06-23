@@ -41,7 +41,7 @@ module.exports.findUser = (req, res) => {
   User.findById(id)
     .then((user) => {
       if (user) {
-        return res.status(200).send({ data })
+        return res.status(200).send({ user })
       } else {
         return res.status(NOTFOUND_ERROR).send({ message: 'Пользователь не найден' })
       }
@@ -65,9 +65,8 @@ module.exports.updateUserInfo = (req, res) => {
     .then((user) => {
       if (user) {
         return res.status(200).send({ user })
-      } else {
-        return res.status(NOTFOUND_ERROR).send({ message: 'Пользователь не найден' })
       }
+    return res.status(NOTFOUND_ERROR).send({ message: 'Пользователь не найден' })
   })
   .catch((err) => {
     if (err.name === 'ValidationError') {
