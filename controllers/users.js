@@ -36,7 +36,7 @@ module.exports.createUser = (req, res) => {
 
 // Находим пользователя по id
 module.exports.findUser = (req, res) => {
-  const id = req.user_id;
+  const id = req.user._id;
 
   User.findById(id)
     .then((user) => {
