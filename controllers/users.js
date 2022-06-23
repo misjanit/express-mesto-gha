@@ -40,18 +40,18 @@ module.exports.createUser = (req, res) => {
   const {id} = req.params;
 
   User.findById(id)
-    .then((user) => {
-      if (!user) {
-        return res.status(400).send({ message: 'Пользователь не найден' });
-      }
-      return res.status(200).send({ user });
-    })
-    .catch((err) => {
-      if (err.name === 'ValidationError' || err.name === 'Error') {
-        return res.status(404).send({ message: 'Произошла ошибка' })
-      }
-      return res.status(400).send({ message: 'Переданы некорректные данные' })
-    })
+  .then((user) => {
+    if (!user) {
+      return res.status(NOTFOUND_ERROR).send({ message: 'Пользователь не найден' });
+    }
+    return res.status(200).send({ user });
+  })
+  .catch((err) => {
+    if (err.name === 'ValidationError' || err.name === 'CastError') {
+      return res.status(VALIDATION_ERROR).send({ message: 'Переданы некорректные данные.' });
+    }
+    return res.status(ERROR).send({ message: 'Произошла ошибка' });
+  });
 }
 
 // Обновляем информацию о пользователе (имя или описание)
