@@ -40,19 +40,16 @@ module.exports.findUser = (req, res) => {
 
   User.findById(id)
     .then((user) => {
-      if (user) {
-        return res.status(200).send({ user })
-      } else {
-        return res.status(NOTFOUND_ERROR).send({ message: 'Пользователь не найден' })
+      if (!user) {
+        return res.status(NOTFOUND_ERROR).send({ message: 'Пользователь не найден' });
       }
+      return res.status(200).send({ user });
     })
     .catch((err) => {
-      if (err.name === 'ValidationError') {
+      if (err.name === 'ValidationError' || err.name === 'Error') {
         return res.status(VALIDATION_ERROR).send({ message: 'Переданы некорректные данные' })
       }
-      if (err.name === 'Error') {
-        return res.status(ERROR).send({ message: 'Произошла ошибка' })
-      }
+      return res.status(ERROR).send({ message: 'Произошла ошибка' })
     })
 }
 
