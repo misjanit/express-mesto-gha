@@ -36,7 +36,7 @@ module.exports.createUser = (req, res) => {
 
 // Находим пользователя по id
 module.exports.findUser = (req, res) => {
-  const { id } = req.params;
+  const { id } = req.user_id;
 
   User.findById(id)
     .then((user) => {
@@ -56,7 +56,7 @@ module.exports.findUser = (req, res) => {
 // Обновляем информацию о пользователе (имя или описание)
 module.exports.updateUserInfo = (req, res) => {
   const { name, about } = req.body;
-  const { id } = req.params;
+  const { id } = req.user_id;
 
   User.findByIdAndUpdate(id, { name, about }, {new: true, runValidators: true })
     .then((user) => {
