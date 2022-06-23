@@ -1,7 +1,7 @@
 const User = require('../models/user');
 const VALIDATION_ERROR = 400;
 const NOTFOUND_ERROR = 404; // пользователь не найден
-const ERROR = 500; // ошибка по умолчанию
+const SERVER_ERROR = 500; // ошибка по умолчанию
 
 // Получаем объект всех пользователей
 module.exports.getUsers = (req, res) => {
@@ -11,7 +11,7 @@ module.exports.getUsers = (req, res) => {
   })
   .catch((err) => {
     if (err.name === 'Error') {
-      return res.status(ERROR).send({ message: 'Произошла ошибка' })
+      return res.status(SERVER_ERROR).send({ message: 'Произошла ошибка' })
     }
   })
 }
@@ -29,10 +29,10 @@ module.exports.createUser = (req, res) => {
         return res.status(VALIDATION_ERROR).send({ message: 'Переданы некорректные данные' })
       }
       if (err.name === 'Error') {
-        return res.status(ERROR).send({ message: 'Произошла ошибка' })
+        return res.status(SERVER_ERROR).send({ message: 'Произошла ошибка' })
       }
-    })
-}
+    });
+};
 
 // Находим пользователя по id
 module.exports.findUser = (req, res) => {
@@ -49,7 +49,7 @@ module.exports.findUser = (req, res) => {
       if (err.name === 'ValidationError' || err.name === 'Error') {
         return res.status(VALIDATION_ERROR).send({ message: 'Переданы некорректные данные' })
       }
-      return res.status(ERROR).send({ message: 'Произошла ошибка' })
+      return res.status(SERVER_ERROR).send({ message: 'Произошла ошибка' })
     })
 }
 
@@ -61,7 +61,7 @@ module.exports.updateUserInfo = (req, res) => {
   User.findByIdAndUpdate(id, { name, about }, {new: true, runValidators: true })
     .then((user) => {
       if (user) {
-        return res.status(200).send({ user })
+        return res.send({ user })
       }
     return res.status(NOTFOUND_ERROR).send({ message: 'Пользователь не найден' })
   })
@@ -70,7 +70,7 @@ module.exports.updateUserInfo = (req, res) => {
       return res.status(VALIDATION_ERROR).send({ message: 'Переданы некорректные данные' })
     }
     if (err.name === 'Error') {
-      return res.status(ERROR).send({ message: 'Произошла ошибка' })
+      return res.status(SERVER_ERROR).send({ message: 'Произошла ошибка' })
     }
   })
 }
@@ -93,7 +93,7 @@ module.exports.updateAvatar = (req, res) => {
       return res.status(VALIDATION_ERROR).send({ message: 'Переданы некорректные данные' })
     }
     if (err.name === 'Error') {
-      return res.status(ERROR).send({ message: 'Произошла ошибка' })
+      return res.status(SERVER_ERROR).send({ message: 'Произошла ошибка' })
     }
   })
 }
