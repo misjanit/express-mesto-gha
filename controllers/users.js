@@ -56,7 +56,7 @@ module.exports.findUser = (req, res) => {
 // Обновляем информацию о пользователе (имя или описание)
 module.exports.updateUserInfo = (req, res) => {
   const { name, about } = req.body;
-  const id = req.user_id;
+  const { id } = req.params;
 
   User.findByIdAndUpdate(id, { name, about }, {new: true, runValidators: true })
     .then((user) => {
