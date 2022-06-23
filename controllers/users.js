@@ -47,7 +47,8 @@ module.exports.findUser = (req, res) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'Error') {
-        return res.status(SERVER_ERROR).send({ message: 'Произошла ошибка' })
+        //return res.status(SERVER_ERROR).send({ message: 'Произошла ошибка' })
+        return res.status(NOTFOUND_ERROR).send({ message: 'Пользователь не найден' });
       }
       return res.status(VALIDATION_ERROR).send({ message: 'Переданы некорректные данные' })
     })
