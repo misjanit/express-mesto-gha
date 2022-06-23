@@ -1,4 +1,5 @@
 const User = require('../models/user');
+const { ObjectId } = require('mongoose').Types;
 const VALIDATION_ERROR = 400;
 const NOTFOUND_ERROR = 404; // пользователь не найден
 const SERVER_ERROR = 500; // ошибка по умолчанию
@@ -41,7 +42,7 @@ module.exports.createUser = (req, res) => {
   User.findById(id)
     .then((user) => {
       if (!user) {
-        return res.status(404).send({ message: 'Пользователь не найден' });
+        return res.status(400).send({ message: 'Пользователь не найден' });
       }
       return res.status(200).send({ user });
     })
@@ -49,7 +50,7 @@ module.exports.createUser = (req, res) => {
       if (err.name === 'ValidationError' || err.name === 'Error') {
         return res.status(500).send({ message: 'Произошла ошибка' })
       }
-      return res.status(400).send({ message: 'Переданы некорректные данные' })
+      return res.status(404).send({ message: 'Переданы некорректные данные' })
     })
 }
 
