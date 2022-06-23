@@ -35,7 +35,7 @@ module.exports.createUser = (req, res) => {
 };
 
 // Находим пользователя по id
-module.exports.findUser = (req, res) => {
+/* module.exports.findUser = (req, res) => {
   const {id} = req.params;
 
   User.findById(id)
@@ -52,6 +52,24 @@ module.exports.findUser = (req, res) => {
       }
       return res.status(VALIDATION_ERROR).send({ message: 'Переданы некорректные данные' })
     })
+} */
+
+module.exports.findUser = (req, res) => {
+  const { id } = req.params;
+
+  User.findById(id)
+    .then((user) => {
+      if (!user) {
+        return res.status(404).send({ message: 'Пользователь по указанному _id не найден.' });
+      }
+      return res.send({ user });
+    })
+    .catch((err) => {
+      if (err.name === 'ValidationError' || err.name === 'CastError') {
+        return res.status(400).send({ message: 'Переданы некорректные данные.' });
+      }
+      return res.status(500).send({ message: 'Произошла ошибка' });
+    });
 }
 
 // Обновляем информацию о пользователе (имя или описание)
