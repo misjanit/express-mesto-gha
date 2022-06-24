@@ -46,7 +46,7 @@ module.exports.findUser = (req, res) => {
       res.send({ data: user });
     })
     .catch((err) => {
-      if (err.name === 'Error') {
+      if (err.name === 'CastError') {
         res.status(400).send({ message: 'Передан некорректный id пользователя' });
       } else {
         res.status(500).send({ message: 'Произошла шибка' });
