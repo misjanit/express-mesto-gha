@@ -1,6 +1,5 @@
 const User = require('../models/user');
-const { ObjectId } = require('mongoose').Types;
-const VALIDATION_ERROR = 400;
+const VALIDATION_ERROR = 400; // переданы некорректные данные
 const NOTFOUND_ERROR = 404; // пользователь не найден
 const SERVER_ERROR = 500; // ошибка по умолчанию
 
@@ -11,7 +10,7 @@ module.exports.getUsers = (req, res) => {
     return res.status(200).send({ users })
   })
   .catch((err) => {
-    if (err.name === 'Error') {
+    if (err.name === 'CastError') {
       return res.status(SERVER_ERROR).send({ message: 'Произошла ошибка' })
     }
   })
@@ -29,7 +28,7 @@ module.exports.createUser = (req, res) => {
       if (err.name === 'ValidationError') {
         return res.status(VALIDATION_ERROR).send({ message: 'Переданы некорректные данные' })
       }
-      if (err.name === 'Error') {
+      if (err.name === 'CastError') {
         return res.status(SERVER_ERROR).send({ message: 'Произошла ошибка' })
       }
     });
@@ -40,16 +39,16 @@ module.exports.findUser = (req, res) => {
   User.findById(req.params.userId)
     .then((user) => {
       if (!user) {
-        res.status(404).send({ message: 'Пользователь не найден' });
+        res.status(NOTFOUND_ERROR).send({ message: 'Пользователь не найден' });
         return;
       }
       res.send({ data: user });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(400).send({ message: 'Передан некорректный id пользователя' });
+        res.status(VALIDATION_ERROR).send({ message: 'Передан некорректный id пользователя' });
       } else {
-        res.status(500).send({ message: 'Произошла шибка' });
+        res.status(SERVER_ERROR).send({ message: 'Произошла шибка' });
       }
     });
 };
@@ -62,7 +61,7 @@ module.exports.updateUserInfo = (req, res) => {
   User.findByIdAndUpdate(id, { name, about }, {new: true, runValidators: true })
     .then((user) => {
     if (!user) {
-      res.status(404).send({ message: 'Пользователь не найден' });
+      res.status(NOTFOUND_ERROR).send({ message: 'Пользователь не найден' });
       return;
     }
     res.send({ data: user });
@@ -71,7 +70,7 @@ module.exports.updateUserInfo = (req, res) => {
     if (err.name === 'ValidationError') {
       return res.status(VALIDATION_ERROR).send({ message: 'Переданы некорректные данные' })
     }
-    if (err.name === 'Error') {
+    if (err.name === 'CastError') {
       return res.status(SERVER_ERROR).send({ message: 'Произошла ошибка' })
     }
   })
@@ -94,7 +93,7 @@ module.exports.updateAvatar = (req, res) => {
     if (err.name === 'ValidationError') {
       return res.status(VALIDATION_ERROR).send({ message: 'Переданы некорректные данные' })
     }
-    if (err.name === 'Error') {
+    if (err.name === 'CastError') {
       return res.status(SERVER_ERROR).send({ message: 'Произошла ошибка' })
     }
   })

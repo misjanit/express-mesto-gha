@@ -1,7 +1,7 @@
 const Card = require('../models/card');
-const VALIDATION_ERROR = 400;
+const VALIDATION_ERROR = 400; // переданы некорректные данные
 const NOTFOUND_ERROR = 404; // пользователь не найден
-const ERROR = 500; // ошибка по умолчанию
+const SERVER_ERROR = 500; // ошибка по умолчанию
 
 // Получаем объект из всех карточек
 module.exports.getCards = (req, res) => {
@@ -10,8 +10,8 @@ module.exports.getCards = (req, res) => {
       return res.status(200).send({ cards })
     })
     .catch((err) => {
-      if (err.name === 'Error') {
-        return res.status(ERROR).send({ message: 'Произошла ошибка' })
+      if (err.name === 'CastError') {
+        return res.status(SERVER_ERROR).send({ message: 'Произошла ошибка' })
       }
     })
 }
@@ -28,8 +28,8 @@ module.exports.createCard = (req, res) => {
       if (err.name === 'ValidationError') {
         return res.status(VALIDATION_ERROR).send({ message: 'Переданы некорректные данные' })
       }
-      if (err.name === 'Error') {
-        return res.status(ERROR).send({ message: 'Произошла ошибка' })
+      if (err.name === 'CastError') {
+        return res.status(SERVER_ERROR).send({ message: 'Произошла ошибка' })
       }
     })
 }
@@ -38,16 +38,16 @@ module.exports.deleteCard = (req, res) => {
   Card.findByIdAndRemove(req.params.cardId)
     .then((card) => {
       if (!card) {
-        res.status(404).send({ message: 'Карточка не найдена' });
+        res.status(NOTFOUND_ERROR).send({ message: 'Карточка не найдена' });
         return;
       }
       res.send({ data: card });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        return res.status(400).send({ message: 'Переданы некорректные данные' })
+        return res.status(VALIDATION_ERROR).send({ message: 'Переданы некорректные данные' })
       } else {
-        return res.status(500).send({ message: 'Произошла ошибка' })
+        return res.status(SERVER_ERROR).send({ message: 'Произошла ошибка' })
       }
     })
 }
@@ -68,7 +68,7 @@ module.exports.likeCard = (req, res) => {
     if (err.name === 'ValidationError' || err.name === 'CastError') {
       return res.status(VALIDATION_ERROR).send({ message: 'Переданы некорректные данные.' });
     }
-    return res.status(ERROR).send({ message: 'Произошла ошибка' });
+    return res.status(SERVER_ERROR).send({ message: 'Произошла ошибка' });
   });
 }
 
@@ -87,7 +87,7 @@ module.exports.dislikeCard = (req, res) => {
     if (err.name === 'ValidationError' || err.name === 'CastError') {
       return res.status(VALIDATION_ERROR).send({ message: 'Переданы некорректные данные.' });
     }
-    return res.status(ERROR).send({ message: 'Произошла ошибка' });
+    return res.status(SERVER_ERROR).send({ message: 'Произошла ошибка' });
   });
 }
 
