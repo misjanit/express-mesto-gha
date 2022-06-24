@@ -38,17 +38,16 @@ module.exports.deleteCard = (req, res) => {
   Card.findByIdAndRemove(req.params.cardId)
     .then((card) => {
       if (!card) {
-        res.status(NOTFOUND_ERROR).send({ message: 'Карточка не найдена' });
+        res.status(404).send({ message: 'Карточка не найдена' });
         return;
       }
-      return res.send({ data: card });
+      res.send({ data: card });
     })
     .catch((err) => {
-      if (err.name === 'ValidationError') {
-        return res.status(VALIDATION_ERROR).send({ message: 'Переданы некорректные данные' })
-      }
-      if (err.name === 'Error') {
-        return res.status(ERROR).send({ message: 'Произошла ошибка' })
+      if (err.name === 'CastError') {
+        return res.status(400).send({ message: 'Переданы некорректные данные' })
+      } else {
+        return res.status(500).send({ message: 'Произошла ошибка' })
       }
     })
 }
