@@ -35,14 +35,13 @@ module.exports.createCard = (req, res) => {
 }
 
 module.exports.deleteCard = (req, res) => {
-  const { id } = req.params;
-
-  Card.findByIdAndRemove(id)
+  Card.findByIdAndRemove(req.params.cardId)
     .then((card) => {
       if (!card) {
-        return res.status(NOTFOUND_ERROR).send({ message: 'Карточка не найдена' });
+        res.status(NOTFOUND_ERROR).send({ message: 'Карточка не найдена' });
+        return;
       }
-      return res.status(200).send({ card });
+      return res.send({ data: card });
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {

@@ -46,10 +46,10 @@ module.exports.findUser = (req, res) => {
       res.send({ data: user });
     })
     .catch((err) => {
-      if (err.name === 'CastError') {
-        res.status(400).send({ message: 'ID пользователя некорректное' });
+      if (err.name === 'Error') {
+        res.status(400).send({ message: 'Передан некорректный id пользователя' });
       } else {
-        res.status(500).send({ message: 'Ошибка' });
+        res.status(500).send({ message: 'Произошла шибка' });
       }
     });
 };
@@ -61,10 +61,11 @@ module.exports.updateUserInfo = (req, res) => {
 
   User.findByIdAndUpdate(id, { name, about }, {new: true, runValidators: true })
     .then((user) => {
-      if (user) {
-        return res.send({ user })
-      }
-    return res.status(NOTFOUND_ERROR).send({ message: 'Пользователь не найден' })
+    if (!user) {
+      res.status(404).send({ message: 'Пользователь не найден' });
+      return;
+    }
+    res.send({ data: user });
   })
   .catch((err) => {
     if (err.name === 'ValidationError') {
