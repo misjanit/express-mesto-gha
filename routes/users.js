@@ -1,6 +1,12 @@
 const router = require('express').Router();
 
-const { getUsers, findUser, createUser, updateUserInfo, updateAvatar } = require('../controllers/users');
+const {
+  getUsers,
+  findUser,
+  createUser,
+  updateUserInfo,
+  updateAvatar,
+} = require('../controllers/users');
 
 // GET-запрос возвращает всех пользователей из базы данных;
 // POST-запрос создаёт пользователя с переданными в теле запроса */
