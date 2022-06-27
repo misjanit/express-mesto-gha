@@ -55,7 +55,7 @@ module.exports.updateUserInfo = (req, res) => {
       res.send({ data: user });
     })
     .catch((err) => {
-      if (err.name === 'ValidationError') {
+      if (err.name === 'ValidationError' || err.name === 'CastError') {
         return res.status(VALIDATION_ERROR).send({ message: 'Переданы некорректные данные' });
       }
       return res.status(SERVER_ERROR).send({ message: 'Произошла ошибка' });
@@ -75,7 +75,7 @@ module.exports.updateAvatar = (req, res) => {
       return res.status(NOTFOUND_ERROR).send({ message: 'Пользователь не найден' });
     })
     .catch((err) => {
-      if (err.name === 'ValidationError') {
+      if (err.name === 'ValidationError' || err.name === 'CastError') {
         return res.status(VALIDATION_ERROR).send({ message: 'Переданы некорректные данные' });
       }
       return res.status(SERVER_ERROR).send({ message: 'Произошла ошибка' });
