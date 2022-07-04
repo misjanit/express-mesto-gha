@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const { celebrate, Joi } = require('celebrate');
+const { errors } = require('celebrate');
 const bodyParser = require('body-parser');
 const usersRoutes = require('./routes/users');
 const cardsRoutes = require('./routes/cards');
@@ -41,6 +42,8 @@ app.use(auth);
 
 app.use('/users', usersRoutes);
 app.use('/cards', cardsRoutes);
+
+app.use(errors());
 
 app.use((req, res, next) => {
   res.status(NOTFOUND_ERROR).send({ message: 'Страница не найдена' });
