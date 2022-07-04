@@ -3,7 +3,6 @@ const router = require('express').Router();
 const {
   getUsers,
   findUser,
-  createUser,
   updateUserInfo,
   updateAvatar,
 } = require('../controllers/users');
@@ -11,13 +10,15 @@ const {
 // GET-запрос возвращает всех пользователей из базы данных;
 // POST-запрос создаёт пользователя с переданными в теле запроса */
 router.get('/', getUsers);
-router.post('/', createUser);
 
 // GET-запрос возвращает пользователя по переданному _id
 router.get('/:userId', findUser);
 
 // PATCH-запрос обновляет информацию о пользователе.
 router.patch('/me', updateUserInfo);
+
+// GET-запрос возвращает информацию о текущем пользователе
+router.get('/me');
 
 // PATCH-запрос обновляет аватар пользователя.
 router.patch('/me/avatar', updateAvatar);
