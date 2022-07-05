@@ -1,4 +1,5 @@
 const express = require('express');
+const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
 const { celebrate, Joi } = require('celebrate');
 const { errors } = require('celebrate');
@@ -7,7 +8,9 @@ const usersRoutes = require('./routes/users');
 const cardsRoutes = require('./routes/cards');
 const auth = require('./middlewares/auth');
 const { login, createUser } = require('./controllers/users');
-const { NOTFOUND_ERROR, SERVER_ERROR, regexp } = require('./utils/constants');
+const { regexp } = require('./utils/constants');
+const NotFoundError = require('./errors/not-found-error');
+const appErrors = require('./errors/app-errors');
 
 const { PORT = 3000 } = process.env;
 const app = express();
@@ -21,20 +24,22 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
 
 // подключаем мидлвары, роуты и всё остальное...
 
+app.use(cookieParser());
+
 app.post('/signin', celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email(),
-    password: Joi.string().required().min(8),
+    password: Joi.string().required(),
   }),
 }), login);
 
 app.post('/signup', celebrate({
   body: Joi.object().keys({
-    email: Joi.string().email(),
-    password: Joi.string().required(),
-    name: Joi.string().required().min(2).max(30),
+    name: Joi.string().min(2).max(30),
     about: Joi.string().min(2).max(30),
     avatar: Joi.string().pattern(regexp),
+    email: Joi.string().required().email(),
+    password: Joi.string().required(),
   }),
 }), createUser);
 
@@ -46,15 +51,8 @@ app.use('/cards', cardsRoutes);
 app.use(errors());
 
 app.use((req, res, next) => {
-  res.status(NOTFOUND_ERROR).send({ message: 'Страница не найдена' });
-  next();
-});
-
-// eslint-disable-next-line no-unused-vars
-app.use((err, req, res, next) => {
-  const { statusCode = SERVER_ERROR, message } = err;
-
-  res.status(statusCode).send({ message: statusCode === SERVER_ERROR ? 'На сервере произошла ошибка' : message });
+  Promise.reject(new NotFoundError(appErrors.ERROR_SERVER))
+    .catch(next);
 });
 
 app.listen(PORT, () => {
