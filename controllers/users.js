@@ -44,30 +44,32 @@ module.exports.createUser = (req, res, next) => {
   } = req.body;
 
   bcrypt.hash(password, 10)
-    .then((hash) => User.create({
-      name,
-      about,
-      avatar,
-      email,
-      password: hash,
-    }))
-    .then((user) => {
-      res.send({
-        _id: user._id,
+    .then((hash) => {
+      User.create({
         name,
         about,
         avatar,
         email,
-      });
-    })
-    .catch((err) => {
-      if (err.code === 11000) {
-        throw new EmailError(appErrors.ERROR_EMAIL_ALREADY_USED);
-      }
-      if (err.name === 'ValidationError') {
-        throw new BadRequestError(appErrors.ERROR_BAD_REQUEST);
-      }
-      return next(err);
+        password: hash,
+      })
+        .then((user) => {
+          res.send({
+            _id: user._id,
+            name,
+            about,
+            avatar,
+            email,
+          });
+        })
+        .catch((err) => {
+          if (err.code === 11000) {
+            throw new EmailError(appErrors.ERROR_EMAIL_ALREADY_USED);
+          }
+          if (err.name === 'ValidationError') {
+            throw new BadRequestError(appErrors.ERROR_BAD_REQUEST);
+          }
+          return next(err);
+        });
     });
 };
 
