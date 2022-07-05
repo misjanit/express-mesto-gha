@@ -8,7 +8,7 @@ const usersRoutes = require('./routes/users');
 const cardsRoutes = require('./routes/cards');
 const auth = require('./middlewares/auth');
 const { login, createUser } = require('./controllers/users');
-const { regexp } = require('./utils/constants');
+const regexp = require('./utils/constants');
 const NotFoundError = require('./errors/not-found-error');
 const appErrors = require('./errors/app-errors');
 
