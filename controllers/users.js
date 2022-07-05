@@ -36,37 +36,24 @@ module.exports.login = (req, res, next) => {
 // Создаем нового пользователя
 module.exports.createUser = (req, res, next) => {
   const {
-    name,
-    about,
-    avatar,
-    email,
-    password,
+    name, about, avatar, email, password,
   } = req.body;
-
   bcrypt.hash(password, 10)
     .then((hash) => {
       User.create({
-        name,
-        about,
-        avatar,
-        email,
-        password: hash,
+        name, about, avatar, email, password: hash,
       })
-        .then((user) => {
+        .then((result) => {
           res.send({
-            _id: user._id,
-            name,
-            about,
-            avatar,
-            email,
+            _id: result._id, name, about, avatar, email,
           });
         })
         .catch((err) => {
           if (err.code === 11000) {
-            throw new EmailError(appErrors.ERROR_EMAIL_ALREADY_USED);
+            return next(new EmailError(appErrors.ERROR_EMAIL_ALREADY_USED));
           }
           if (err.name === 'ValidationError') {
-            throw new BadRequestError(appErrors.ERROR_BAD_REQUEST);
+            return next(new BadRequestError(appErrors.ERROR_INCORRECT_NEW_USER_PARAMS));
           }
           return next(err);
         });
