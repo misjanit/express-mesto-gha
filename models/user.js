@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const isEmail = require('validator/lib/isEmail');
-const { regexp } = require('../utils/constants');
+const { regexpLink } = require('../utils/constants');
 const AuthError = require('../errors/auth-error');
 const appErrors = require('../errors/app-errors');
 
@@ -24,7 +24,7 @@ const userSchema = new Schema({
     type: String,
     default: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
     validate: {
-      validator: (v) => regexp.test(v),
+      validator: (v) => regexpLink.test(v),
       message: 'Неправильный формат ссылки',
     },
   },

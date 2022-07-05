@@ -8,7 +8,7 @@ const usersRoutes = require('./routes/users');
 const cardsRoutes = require('./routes/cards');
 const auth = require('./middlewares/auth');
 const { login, createUser } = require('./controllers/users');
-const { regexp, NOTFOUND_ERROR, SERVER_ERROR } = require('./utils/constants');
+const { regexpLink, NOTFOUND_ERROR, SERVER_ERROR } = require('./utils/constants');
 const NotFoundError = require('./errors/not-found-error');
 const appErrors = require('./errors/app-errors');
 
@@ -37,7 +37,7 @@ app.post('/signup', celebrate({
   body: Joi.object().keys({
     name: Joi.string().min(2).max(30),
     about: Joi.string().min(2).max(30),
-    avatar: Joi.string().pattern(regexp),
+    avatar: Joi.string().pattern(regexpLink),
     email: Joi.string().required().email(),
     password: Joi.string().required(),
   }),
