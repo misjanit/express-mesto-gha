@@ -8,7 +8,9 @@ const usersRoutes = require('./routes/users');
 const cardsRoutes = require('./routes/cards');
 const auth = require('./middlewares/auth');
 const { login, createUser } = require('./controllers/users');
-const regexp = require('./utils/constants');
+const { regexp, NOTFOUND_ERROR, SERVER_ERROR } = require('./utils/constants');
+const NotFoundError = require('./errors/not-found-error');
+const appErrors = require('./errors/app-errors');
 
 const { PORT = 3000 } = process.env;
 const app = express();
@@ -49,8 +51,17 @@ app.use('/cards', cardsRoutes);
 app.use(errors());
 
 app.use((req, res, next) => {
-  res.status(404).send({ message: 'Страница не найдена' });
+  res.status(NOTFOUND_ERROR).send({ message: 'Страница не найдена' });
   next();
+});
+
+// eslint-disable-next-line no-unused-vars
+app.use((err, req, res, next) => {
+  const { statusCode = SERVER_ERROR, message } = err;
+
+  res.status(statusCode).send({ message: statusCode === SERVER_ERROR ? 'На сервере произошла ошибка' : message });
+  Promise.reject(new NotFoundError(appErrors.ERROR_SERVER))
+    .catch(next);
 });
 
 app.listen(PORT, () => {

@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const regexp = require('../utils/constants');
+const { regexp } = require('../utils/constants');
 
 const cardSchema = new mongoose.Schema({
   name: {
