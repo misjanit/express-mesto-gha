@@ -22,14 +22,15 @@ module.exports.login = (req, res, next) => {
 
   return User.findUserByCredentials(email, password)
     .then((user) => {
-      const token = jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : 'secret', { expiresIn: '7d' });
+      const token = jwt.sign(
+        { _id: user._id },
+        NODE_ENV === 'production' ? JWT_SECRET : 'secret',
+        { expiresIn: '7d' },
+      );
       res.status(200).send({ token });
     })
-    .catch((err) => {
-      if (err.name === 'ValidationError') {
-        throw new AuthError(appErrors.ERROR_LOGIN);
-      }
-      return next(err);
+    .catch(() => {
+      next(new AuthError(appErrors.ERROR_LOGIN));
     });
 };
 
@@ -128,23 +129,3 @@ module.exports.updateAvatar = (req, res, next) => {
       return next(err);
     });
 };
-
-/* .then((user) => {
-      if (!user) {
-        return Promise.reject(new Error('Неправильные почта или пароль'));
-      }
-      return bcrypt.compare(password, user.password);
-    })
-    .then((matched) => {
-      if (!matched) {
-        return Promise.reject(new Error('Неправильные почта или пароль'));
-      }
-      return res.status(200).send({ message: 'Успешно' }); // нужен ли тут return?
-    })
-    .catch((err) => {
-      if (err.name === 'ValidationError') {
-        return res.status(401).send({ message: 'Переданы некорректные данные' });
-      }
-      return res.status(SERVER_ERROR).send({ message: 'Произошла ошибка' });
-    });
-    */
