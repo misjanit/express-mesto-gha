@@ -86,6 +86,18 @@ module.exports.findUser = (req, res, next) => {
     });
 };
 
+// Получаем информацию о пользователе
+module.exports.getUserInfo = (req, res, next) => {
+  User.findById(req.user._id)
+    .then((user) => {
+      if (!user) {
+        throw new NotFoundError(appErrors.ERROR_USER_NOT_FOUND);
+      }
+      return res.send({ user });
+    })
+    .catch(next);
+};
+
 // Обновляем информацию о пользователе (имя или описание)
 module.exports.updateUserInfo = (req, res, next) => {
   const { name, about } = req.body;

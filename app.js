@@ -7,7 +7,7 @@ const usersRoutes = require('./routes/users');
 const cardsRoutes = require('./routes/cards');
 const auth = require('./middlewares/auth');
 const { login, createUser } = require('./controllers/users');
-const { NOTFOUND_ERROR, SERVER_ERROR } = require('./utils/constants');
+const { NOTFOUND_ERROR, SERVER_ERROR, regexp } = require('./utils/constants');
 
 const { PORT = 3000 } = process.env;
 const app = express();
@@ -30,11 +30,11 @@ app.post('/signin', celebrate({
 
 app.post('/signup', celebrate({
   body: Joi.object().keys({
-    email: Joi.string().required().email(),
-    password: Joi.string().required().min(8),
+    email: Joi.string().email(),
+    password: Joi.string().required(),
     name: Joi.string().required().min(2).max(30),
-    age: Joi.number().integer().required().min(18),
     about: Joi.string().min(2).max(30),
+    avatar: Joi.string().pattern(regexp),
   }),
 }), createUser);
 
