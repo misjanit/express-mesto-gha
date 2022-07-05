@@ -51,13 +51,15 @@ module.exports.createUser = (req, res, next) => {
       email,
       password: hash,
     }))
-    .then((user) => res.send({
-      _id: user._id,
-      name,
-      about,
-      avatar,
-      email,
-    }))
+    .then((user) => {
+      res.send({
+        _id: user._id,
+        name,
+        about,
+        avatar,
+        email,
+      });
+    })
     .catch((err) => {
       if (err.code === 11000) {
         throw new EmailError(appErrors.ERROR_EMAIL_ALREADY_USED);
