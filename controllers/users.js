@@ -30,8 +30,9 @@ module.exports.login = (req, res, next) => {
       res.status(200).send({ token });
     })
     .catch(() => {
-      next(new AuthError(appErrors.ERROR_LOGIN));
-    });
+      throw new AuthError(appErrors.ERROR_LOGIN);
+    })
+    .catch(next);
 };
 
 // Создаем нового пользователя
