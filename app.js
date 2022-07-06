@@ -9,8 +9,8 @@ const cardsRoutes = require('./routes/cards');
 const auth = require('./middlewares/auth');
 const { login, createUser } = require('./controllers/users');
 const { regexpLink, NOTFOUND_ERROR } = require('./utils/constants');
-const NotFoundError = require('./errors/not-found-error');
-const appErrors = require('./errors/app-errors');
+// const NotFoundError = require('./errors/not-found-error');
+// const appErrors = require('./errors/app-errors');
 
 const { PORT = 3000 } = process.env;
 const app = express();
@@ -56,9 +56,14 @@ app.use((req, res, next) => {
 });
 
 // eslint-disable-next-line no-unused-vars
-app.use((req, res, next) => {
-  Promise.reject(new NotFoundError(appErrors.ERROR_SERVER))
-    .catch(next);
+app.use((err, req, res, next) => {
+  const { statusCode = 500, message } = err;
+  res
+    .status(statusCode)
+    .send({
+      // проверяем статус и выставляем сообщение в зависимости от него
+      message: statusCode === 500 ? 'На сервере произошла ошибка' : message,
+    });
 });
 
 app.listen(PORT, () => {
