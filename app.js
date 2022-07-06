@@ -6,7 +6,7 @@ const { errors } = require('celebrate');
 const bodyParser = require('body-parser');
 const usersRoutes = require('./routes/users');
 const cardsRoutes = require('./routes/cards');
-const auth = require('./middlewares/auth');
+// const auth = require('./middlewares/auth');
 const { login, createUser } = require('./controllers/users');
 const { regexpLink, NOTFOUND_ERROR } = require('./utils/constants');
 // const NotFoundError = require('./errors/not-found-error');
@@ -43,7 +43,7 @@ app.post('/signup', celebrate({
   }),
 }), createUser);
 
-app.use(auth);
+// app.use(auth);
 
 app.use('/users', usersRoutes);
 app.use('/cards', cardsRoutes);
