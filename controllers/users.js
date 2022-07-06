@@ -66,12 +66,13 @@ module.exports.createUser = (req, res, next) => {
 
 // Находим пользователя по id
 module.exports.findUser = (req, res, next) => {
-  User.findById(req.params.userId)
+  const { id } = req.params;
+  User.findById(id)
     .then((user) => {
       if (!user) {
         throw new NotFoundError(appErrors.ERROR_USER_NOT_FOUND);
       }
-      return res.status(200).send({ user });
+      return res.send({ user });
     })
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError') {
