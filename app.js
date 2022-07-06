@@ -8,9 +8,9 @@ const usersRoutes = require('./routes/users');
 const cardsRoutes = require('./routes/cards');
 const auth = require('./middlewares/auth');
 const { login, createUser } = require('./controllers/users');
-const { regexpLink, NOTFOUND_ERROR } = require('./utils/constants');
-// const NotFoundError = require('./errors/not-found-error');
-// const appErrors = require('./errors/app-errors');
+const { regexpLink } = require('./utils/constants');
+const NotFoundError = require('./errors/not-found-error');
+const appErrors = require('./errors/app-errors');
 
 const { PORT = 3000 } = process.env;
 const app = express();
@@ -51,8 +51,8 @@ app.use('/cards', cardsRoutes);
 app.use(errors());
 
 app.use((req, res, next) => {
-  res.status(NOTFOUND_ERROR).send({ message: 'Страница не найдена' });
-  next();
+  Promise.reject(new NotFoundError(appErrors.ERROR_BAD_REQUEST))
+    .catch(next);
 });
 
 // eslint-disable-next-line no-unused-vars
