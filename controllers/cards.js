@@ -32,15 +32,15 @@ module.exports.deleteCard = (req, res, next) => {
   const { cardId } = req.params;
   Card.findById(cardId)
     .then((card) => {
+      if (!card) {
+        throw new NotFoundError(appErrors.ERROR_CARD_NOT_FOUND);
+      }
       if (userId !== card.owner.toString()) {
         throw new DeleteError(appErrors.ERROR_DELETE_CARD);
       } else {
         Card.findByIdAndRemove(cardId)
           .then((result) => res.send({ result }))
           .catch(next);
-      }
-      if (!card) {
-        throw new NotFoundError(appErrors.ERROR_CARD_NOT_FOUND);
       }
     })
     .catch(next);
