@@ -37,31 +37,30 @@ module.exports.login = (req, res, next) => {
 
 // Создаем нового пользователя
 module.exports.createUser = (req, res, next) => {
-  const {
-    name, about, avatar, email, password,
-  } = req.body;
-  bcrypt.hash(password, 10)
-    .then((hash) => {
-      User.create({
-        name, about, avatar, email, password: hash,
-      })
-        .then((result) => {
-          res.send({
-            name: result.name,
-            about: result.about,
-            avatar: result.avatar,
-            email: result.email,
-          });
-        })
-        .catch((err) => {
-          if (err.code === 11000) {
-            return next(new EmailError(appErrors.ERROR_EMAIL_ALREADY_USED));
-          }
-          if (err.name === 'ValidationError') {
-            return next(new BadRequestError(appErrors.ERROR_INCORRECT_NEW_USER_PARAMS));
-          }
-          return next(err);
-        });
+  bcrypt.hash(req.body.password, 10)
+    .then((hash) => User.create({
+      name: req.body.name,
+      about: req.body.about,
+      avatar: req.body.avatar,
+      email: req.body.email,
+      password: hash,
+    }))
+    .then((result) => {
+      res.send({
+        name: result.name,
+        about: result.about,
+        avatar: result.avatar,
+        email: result.email,
+      });
+    })
+    .catch((err) => {
+      if (err.code === 11000) {
+        return next(new EmailError(appErrors.ERROR_EMAIL_ALREADY_USED));
+      }
+      if (err.name === 'ValidationError') {
+        return next(new BadRequestError(appErrors.ERROR_INCORRECT_NEW_USER_PARAMS));
+      }
+      return next(err);
     });
 };
 
