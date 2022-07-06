@@ -36,10 +36,11 @@ module.exports.deleteCard = (req, res, next) => {
       }
       if (userId !== card.owner.toString()) {
         throw new DeleteError(appErrors.ERROR_DELETE_CARD);
+      } else {
+        Card.findByIdAndRemove(req.params.cardId)
+          .then((result) => res.send({ result }))
+          .catch(next);
       }
-      Card.findByIdAndRemove(req.params.cardId)
-        .then((result) => res.send({ result }))
-        .catch(next);
     })
     .catch(next);
 };
