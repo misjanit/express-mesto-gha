@@ -47,7 +47,10 @@ module.exports.createUser = (req, res, next) => {
       })
         .then((result) => {
           res.send({
-            _id: result._id, name, about, avatar, email,
+            name: result.name,
+            about: result.about,
+            avatar: result.avatar,
+            email: result.email,
           });
         })
         .catch((err) => {
