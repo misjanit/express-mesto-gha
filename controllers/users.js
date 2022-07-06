@@ -27,7 +27,7 @@ module.exports.login = (req, res, next) => {
         NODE_ENV === 'production' ? JWT_SECRET : 'secret',
         { expiresIn: '7d' },
       );
-      res.status(200).send({ token });
+      res.send({ token });
     })
     .catch(() => {
       throw new AuthError(appErrors.ERROR_LOGIN);
