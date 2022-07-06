@@ -16,6 +16,13 @@ router.get('/', getUsers);
 // GET-запрос возвращает пользователя по переданному _id
 router.get('/me', getUserInfo);
 
+// GET-запрос возвращает информацию о текущем пользователе
+router.get('/:id', celebrate({
+  params: Joi.object().keys({
+    id: Joi.string().hex().length(24),
+  }),
+}), findUser);
+
 // PATCH-запрос обновляет информацию о пользователе.
 router.patch('/me', celebrate({
   body: Joi.object().keys({
@@ -30,12 +37,5 @@ router.patch('/me/avatar', celebrate({
     avatar: Joi.string().required().pattern(regexpLink),
   }),
 }), updateAvatar);
-
-// GET-запрос возвращает информацию о текущем пользователе
-router.get('/:id', celebrate({
-  params: Joi.object().keys({
-    id: Joi.string().hex().length(24),
-  }),
-}), findUser);
 
 module.exports = router;

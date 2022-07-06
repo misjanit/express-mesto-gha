@@ -68,7 +68,7 @@ module.exports.findUser = (req, res, next) => {
       if (!user) {
         throw new NotFoundError(appErrors.ERROR_USER_NOT_FOUND);
       }
-      return res.send({ user });
+      return res.status(200).send({ user });
     })
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError') {
